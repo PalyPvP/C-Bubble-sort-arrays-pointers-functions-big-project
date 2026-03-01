@@ -7,6 +7,7 @@
 #include<stdlib.h>
 #include<time.h>
 #include<string.h>//used to copy things byte by byte. for example memcpy(*to, *from, numBytes)      I used it in the array save copy thing
+#include <limits.h>//used for INT_MIN and INT_MAX for my calc_arraymin/max functions, I need the lowest possible values an int can have in there for the logic
 
 void check_i(int check, int n);  // declaration (promise) <-- ChatGPT ; this is just to tell the program that the function check_i exists, because array_init_manuals print_array was having some problems
 void print_array(int array[], int n_1);
@@ -111,6 +112,36 @@ void i_generation_range (int *a, int *b)//no wayy, I actually learned adresses a
     */
 }
 
+void calc_array_min (int array[], int n_1, int *array_min)
+{
+    for (int i = 0; i<n_1 ; i++)
+    {
+        if (array[i] < array[i+1])
+        {
+
+        }
+    }
+}
+
+void calc_array_max (int array[], int n_1, int *array_max)//array_max should first be declared as the lowest possible INT value (using the library limits.h it's "INT_MIN")
+{
+    for (int i = 0; i<n_1; i++)
+    {
+        if (array[i]>*array_max)//same thing as below
+        {
+            *array_max = array[i]; //as said below the * dereferences array_max from the memory adress and allows correct int to int comparison, not int to memory value
+        }
+
+        /* storing this away to learn from history, this logical flaw is horrendous, but hey, I found it and fixed it without AI stepping in and without seeing the fault on runtime
+        if (array[i]>array[i+1])
+        {
+            *array_max = array[i] ;//I had int b4 array_max but that is forbidden bacause its already defined and it points to mains variable       PLUS      I need to put * before an variable that is like array_max
+        }//PLUS I need to put * before an variable that is like array_max.    array_max = array[i] is "Put this value int into var. array_max", but *array_max = array[i] means "Put int value into an memory data type variable (impossible - will output error invalid data type conversion int ->*int) "\
+        */
+    }
+    printf("The maximum value of the array is %d\n",*array_max);
+}
+
 int main()
 {
     int choice_1,a,b,choice_2;
@@ -121,6 +152,11 @@ int main()
     printf("Input the desired number of elements in 'array'\n");
     int check_1 = scanf("%d",&n_1);
     check_i(check_1, 1);
+    if (n_1 <= 0)
+    {
+        printf("ERROR: negative and 0 values are not allowed\n");
+        return 1;
+    }
     int array[n_1];
     printf("An array consisting of %d elements was created sucessfully\n",n_1);
     printf("Do you wish to input the values into the array manually (type '1') or do you want to generate them (type '2')?\n");
@@ -142,7 +178,7 @@ int main()
         array_init_gen(array,a,b,n_1);
     }
     
-    printf("We are going to do the bubblesort now, type '1' for min2max sort or type '2' for max2min sort.\n");
+    printf("\nWe are going to do the bubblesort now, type '1' for min2max sort or type '2' for max2min sort.\n");
     int check_4 = scanf("%d",&choice_2);
     check_i(check_4, 1);
     if (choice_2 != 1 && choice_2 != 2)
@@ -173,6 +209,47 @@ int main()
         printf("The sorted array:\t");
         print_array(array_sorted_max2min,n_1);
     }
+
+
+    char choice_3 [4];//4 because three characters AND /0
+    printf("\nNow we are going to calculate the max, min and the average of the array\n");
+    printf("1st place: min, 2nd place:max, 3rd place:avg.\n"
+           "1 = ON, 0 = OFF.  (type a code like e.g. '010' for only max value)\n");
+    int check_5 = scanf("%s",choice_3);
+    check_i(check_5, 1);
+    //printf("%d",choice_3[0]); // this helped me diagnose why the comparison didnt work. if I printed the whole string then I would get the classical (101) result but print only one and it returns the ASCII value
+    if ((choice_3[0] != '1' && choice_3[0] != '0') || (choice_3[1] != '1' && choice_3[1] != '0') || (choice_3[2] != '1' && choice_3[2] != '0')) // if I do '1' then it behaves like an char and has the value of 49 so
+    {// the comparison will be is 49 != 49?      but if I had without '' then it would be is 49 != 1 
+        printf("ERROR: wrong input values (2nd)\n");
+        return 1;
+    }
+    if (choice_3[0] == '1')
+    {
+        int array_min;
+        //calc_array_min
+    }
+    if (choice_3[1] == '1')
+    {
+        int array_max = INT_MIN;
+        calc_array_max(array, n_1, &array_max);
+    }
+    if (choice_3[2] == '1')
+    {
+        int array_avg;
+        //calc_array_avg
+    }
+
+
+
+           
+           
+           /*
+    int check_5 = scanf("%s",choice_3);//data type s ; I don't need to add & to choice_3 bcs its an array and it automatically decays into a pointer of a memory adress so I dont have to do it myself
+    check_i(check_5,1);
+    printf("%s\n",choice_3);//the data type choice is "s"
+    */
+    
+
     /*Implement Bubble Sort yourself — you already have the array ready, it’s a natural next step.
 
     Add sorting order choice — ascending or descending.
