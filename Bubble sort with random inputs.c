@@ -107,29 +107,30 @@ void i_generation_range (int *a, int *b)//no wayy, I actually learned adresses a
     int check = scanf("%d%d",a,b);
     check_i(check,2);
     /*
-    printf("\n%p\n",a); //just checking the behaviour of printing pointers while explainthing this to myself to understand it more
+    printf("\n%p\n",a); //just checking the behaviour of printing pointers while explaining this to myself to understand it more
     printf("%d\n",*a);
     */
 }
 
-void calc_array_min (int array[], int n_1, int *array_min)
+void calc_array_min (int array[], int n_1, int *array_min)//the array_min variable needs to have the largest possible value in dt int, thus INT_MAX
 {
     for (int i = 0; i<n_1 ; i++)
     {
-        if (array[i] < array[i+1])
+        if (array[i] < *array_min)
         {
-
+            *array_min = array[i];
         }
     }
+    printf("The minimum value of the array is %d\n",*array_min);
 }
 
 void calc_array_max (int array[], int n_1, int *array_max)//array_max should first be declared as the lowest possible INT value (using the library limits.h it's "INT_MIN")
 {
     for (int i = 0; i<n_1; i++)
     {
-        if (array[i]>*array_max)//same thing as below
+        if (array[i]>*array_max)//as said below the * dereferences array_max from the memory adress and allows correct int to int comparison, not int to memory value
         {
-            *array_max = array[i]; //as said below the * dereferences array_max from the memory adress and allows correct int to int comparison, not int to memory value
+            *array_max = array[i]; //! we need * b4 this pointer because array_max is just accessing the memory value and *array_max is accesing the value stored inside that memory
         }
 
         /* storing this away to learn from history, this logical flaw is horrendous, but hey, I found it and fixed it without AI stepping in and without seeing the fault on runtime
@@ -140,6 +141,23 @@ void calc_array_max (int array[], int n_1, int *array_max)//array_max should fir
         */
     }
     printf("The maximum value of the array is %d\n",*array_max);
+}
+
+
+void calc_array_esum(int array[], int n_1, int *array_sum)
+{
+    for (int i = 0; i<n_1; i++)
+    {
+        *array_sum = *array_sum + array[i];
+    }
+    printf("The sum of the elements in the array is %d\n",*array_sum);
+}
+
+void calc_array_avg (int array_sum, int n_1, float *array_avg)
+{   
+    *array_avg = (float)array_sum/n_1; //I don't need to check if n_1 != 0 because that's at the start of the code. Like no, you won't create an 0 element array, I won't allow it
+    //printf("\n%d\t%d\t%f\n",array_sum,n_1,*array_avg); //debugging tool
+    printf("The average value of the elements in the array is %.3f \n ",*array_avg);//at first I forgot to change %d to %f but I fixed it by myself!
 }
 
 int main()
@@ -225,8 +243,8 @@ int main()
     }
     if (choice_3[0] == '1')
     {
-        int array_min;
-        //calc_array_min
+        int array_min = INT_MAX;
+        calc_array_min(array, n_1, &array_min);
     }
     if (choice_3[1] == '1')
     {
@@ -235,8 +253,10 @@ int main()
     }
     if (choice_3[2] == '1')
     {
-        int array_avg;
-        //calc_array_avg
+        int array_sum = 0;
+        float array_avg;
+        calc_array_esum(array, n_1, &array_sum);
+        calc_array_avg(array_sum, n_1, &array_avg);
     }
 
 
